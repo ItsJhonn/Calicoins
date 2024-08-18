@@ -49,6 +49,7 @@
             margin-top: 20px;
             position: relative;
             display: inline-block;
+            visibility: hidden; /* Escondemos el contenedor de video inicialmente */
         }
         video {
             width: 100%;
@@ -86,10 +87,10 @@
         <button id="sendButton">Enviar Sepolia</button>
         <div id="qr-code"></div>
         <div id="qrReader">
-            <button id="startScan">Iniciar escaneo de QR</button>
             <div class="scan-bar"></div>
             <video id="video"></video>
         </div>
+        <button id="startScan">Iniciar escaneo de QR</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
@@ -106,6 +107,7 @@
         const accountInfo = document.getElementById('accountInfo');
         const qrCodeDiv = document.getElementById('qr-code');
         const startScanButton = document.getElementById('startScan');
+        const qrReader = document.getElementById('qrReader');
         const video = document.getElementById('video');
         let web3;
         let userAccount;
@@ -187,11 +189,13 @@
 
         // Iniciar escaneo de QR
         startScanButton.addEventListener('click', () => {
+            qrReader.style.visibility = 'visible'; // Mostrar el lector de QR cuando se inicia el escaneo
             codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
                 if (result) {
                     qrValueInput.value = result.text;
                     alert('Escaneo exitoso: ' + result.text);
                     codeReader.reset();
+                    qrReader.style.visibility = 'hidden'; // Ocultar el lector de QR después del escaneo exitoso
 
                     // Conectar automáticamente la wallet si se escanea una dirección válida
                     if (window.ethereum) {
@@ -212,8 +216,8 @@
                     console.error(error);
                 }
             }, {
-                delayBetweenScanAttempts: 100, // Tiempo entre intentos de escaneo (en ms)
-                maxScansPerSecond: 10,         // Máximo número de escaneos por segundo
+                delayBetweenScanAttempts: 50,  // Reducción del tiempo entre intentos de escaneo
+                maxScansPerSecond: 15,         // Incremento del número máximo de escaneos por segundo
             });
         });
 
