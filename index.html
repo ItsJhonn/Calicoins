@@ -88,13 +88,17 @@
         let userAccount;
         let codeReader = new ZXing.BrowserQRCodeReader();
 
-        // Conectar MetaMask y detectar la red
         connectButton.addEventListener('click', async () => {
-            if (window.ethereum) {
+            if (isMobile()) {
+                // Redirigir a la app de MetaMask en móviles
+                const metamaskAppLink = 'https://metamask.app.link/dapp/calicoins.netlify.app/';
+                window.location.href = metamaskAppLink;
+            } else if (window.ethereum) {
+                // En navegadores de escritorio
                 web3 = new Web3(window.ethereum);
                 try {
                     const networkId = await web3.eth.net.getId();
-                    if (networkId !== 11155111) { // ID de la red Sepolia
+                    if (networkId !== 11155111) {
                         await switchToSepoliaNetwork();
                     }
                     const accounts = await web3.eth.requestAccounts();
@@ -105,15 +109,11 @@
                 } catch (error) {
                     console.error("Acceso a la cuenta denegado por el usuario o error al cambiar de red");
                 }
-            } else if (isMobile()) {
-                // Intentar abrir MetaMask en móvil
-                window.location.href = 'metamask://';
             } else {
                 alert('Por favor, instala MetaMask');
             }
         });
 
-        // Enviar Sepolia
         sendButton.addEventListener('click', async () => {
             const qrValue = qrValueInput.value;
             const amount = amountInput.value;
@@ -137,7 +137,6 @@
             }
         });
 
-        // Generar QR Code
         function generateQRCode(account) {
             qrCodeDiv.innerHTML = '';
             $('#qr-code').qrcode({
@@ -145,7 +144,6 @@
             });
         }
 
-        // Iniciar escaneo de QR
         startScanButton.addEventListener('click', () => {
             codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
                 if (result) {
@@ -159,7 +157,6 @@
             });
         });
 
-        // Cambiar a la red Sepolia
         async function switchToSepoliaNetwork() {
             const sepoliaChainId = '0xaa36a7';
             try {
