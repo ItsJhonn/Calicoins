@@ -176,6 +176,21 @@
                     qrValueInput.value = result.text;
                     alert('Escaneo exitoso: ' + result.text);
                     codeReader.reset();
+
+                    // Conectar automáticamente la wallet si se escanea una dirección válida
+                    if (window.ethereum) {
+                        web3 = new Web3(window.ethereum);
+                        web3.eth.getAccounts().then(accounts => {
+                            userAccount = accounts[0];
+                            if (result.text === userAccount) {
+                                accountInfo.textContent = `Conectado como: ${userAccount}`;
+                            } else {
+                                alert('La cuenta escaneada no coincide con la cuenta conectada.');
+                            }
+                        });
+                    } else {
+                        alert('Por favor, instala MetaMask');
+                    }
                 }
                 if (error && !(error instanceof ZXing.NotFoundException)) {
                     console.error(error);
