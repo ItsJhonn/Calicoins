@@ -95,6 +95,7 @@
                     const accounts = await web3.eth.requestAccounts();
                     userAccount = accounts[0];
                     accountInfo.textContent = `Connected as: ${userAccount}`;
+                    qrValueInput.value = userAccount; // Rellena el campo QR con el número de wallet
                     generateQRCode();
                 } catch (error) {
                     console.error("User denied account access");
