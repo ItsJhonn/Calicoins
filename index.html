@@ -61,9 +61,6 @@
         <h1>Sepolia QR Transfer</h1>
         <button id="connectButton">Conectar MetaMask</button>
         <div id="accountInfo"></div>
-        <input type="text" id="qrValue" placeholder="QR Code Value" />
-        <input type="text" id="amount" placeholder="Amount in Sepolia" />
-        <button id="sendButton">Send Sepolia</button>
         <div id="qr-code"></div>
         <div id="qrReader">
             <button id="startScan">Start QR Scan</button>
@@ -77,9 +74,6 @@
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script>
         const connectButton = document.getElementById('connectButton');
-        const sendButton = document.getElementById('sendButton');
-        const qrValueInput = document.getElementById('qrValue');
-        const amountInput = document.getElementById('amount');
         const accountInfo = document.getElementById('accountInfo');
         const qrCodeDiv = document.getElementById('qr-code');
         const startScanButton = document.getElementById('startScan');
@@ -92,60 +86,32 @@
             if (window.ethereum) {
                 web3 = new Web3(window.ethereum);
                 try {
-                    // Asegura que MetaMask esté en la red Sepolia
                     await switchToSepoliaNetwork();
-
                     const accounts = await web3.eth.requestAccounts();
                     userAccount = accounts[0];
                     accountInfo.textContent = `Conectado como: ${userAccount}`;
-                    qrValueInput.value = userAccount;
-                    generateQRCode();
+                    generateQRCode(userAccount);
                 } catch (error) {
                     console.error("Acceso a la cuenta denegado por el usuario o error al cambiar de red");
                 }
             } else if (isMobile()) {
-                // Intentar abrir MetaMask en móvil
                 window.location.href = 'metamask://';
             } else {
                 alert('Por favor, instala MetaMask');
             }
         });
 
-        sendButton.addEventListener('click', async () => {
-            const qrValue = qrValueInput.value;
-            const amount = amountInput.value;
-            if (userAccount && qrValue && amount) {
-                try {
-                    const transactionParameters = {
-                        to: qrValue,
-                        from: userAccount,
-                        value: web3.utils.toHex(web3.utils.toWei(amount, 'ether')),
-                    };
-                    const txHash = await window.ethereum.request({
-                        method: 'eth_sendTransaction',
-                        params: [transactionParameters],
-                    });
-                    console.log('Transacción enviada con hash:', txHash);
-                } catch (error) {
-                    console.error('Error en la transacción', error);
-                }
-            } else {
-                alert('Por favor, conecta MetaMask, introduce el valor del QR y la cantidad.');
-            }
-        });
-
-        function generateQRCode() {
-            const qrValue = qrValueInput.value;
+        function generateQRCode(account) {
             qrCodeDiv.innerHTML = '';
             $('#qr-code').qrcode({
-                text: `https://example.com/qr?value=${qrValue}`
+                text: account
             });
         }
 
         startScanButton.addEventListener('click', () => {
             codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
                 if (result) {
-                    qrValueInput.value = result.text;
+                    alert('Escaneo exitoso: ' + result.text);
                     codeReader.reset();
                 }
                 if (error) {
@@ -162,7 +128,6 @@
                     params: [{ chainId: sepoliaChainId }],
                 });
             } catch (switchError) {
-                // Este error puede ocurrir si la red no está configurada en MetaMask
                 if (switchError.code === 4902) {
                     try {
                         await window.ethereum.request({
