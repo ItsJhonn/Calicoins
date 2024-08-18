@@ -47,12 +47,27 @@
         }
         #qrReader {
             margin-top: 20px;
+            position: relative;
+            display: inline-block;
         }
         video {
             width: 100%;
             max-width: 300px;
             border: 1px solid #ddd;
             border-radius: 4px;
+        }
+        .scan-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 0, 0, 0.75);
+            animation: scan 2s infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: calc(100% - 4px); }
         }
         #verifyTransactionButton {
             display: none;
@@ -72,6 +87,7 @@
         <div id="qr-code"></div>
         <div id="qrReader">
             <button id="startScan">Iniciar escaneo de QR</button>
+            <div class="scan-bar"></div>
             <video id="video"></video>
         </div>
     </div>
@@ -195,6 +211,9 @@
                 if (error && !(error instanceof ZXing.NotFoundException)) {
                     console.error(error);
                 }
+            }, {
+                delayBetweenScanAttempts: 100, // Tiempo entre intentos de escaneo (en ms)
+                maxScansPerSecond: 10,         // Máximo número de escaneos por segundo
             });
         });
 
