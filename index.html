@@ -156,7 +156,13 @@
         verifyTransactionButton.addEventListener('click', () => {
             if (userAccount) {
                 const etherscanUrl = `https://calicoins.etherscan.io/address/${userAccount}`;
-                window.open(etherscanUrl, '_blank');
+                if (isMobile()) {
+                    // Abre el enlace en el navegador predeterminado en dispositivos móviles
+                    window.open(etherscanUrl, '_system');
+                } else {
+                    // Abre el enlace en una nueva pestaña del navegador en otros dispositivos
+                    window.open(etherscanUrl, '_blank');
+                }
             } else {
                 alert('Conecta MetaMask primero.');
             }
