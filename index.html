@@ -94,17 +94,18 @@
                 try {
                     const accounts = await web3.eth.requestAccounts();
                     userAccount = accounts[0];
-                    accountInfo.textContent = `Connected as: ${userAccount}`;
-                    qrValueInput.value = userAccount; // Rellena el campo QR con el número de wallet
+                    accountInfo.textContent = `Conectado como: ${userAccount}`;
+                    // Aseguramos que el campo qrValue se rellene con la wallet address
+                    qrValueInput.value = userAccount;
                     generateQRCode();
                 } catch (error) {
-                    console.error("User denied account access");
+                    console.error("Acceso a la cuenta denegado por el usuario");
                 }
             } else if (isMobile()) {
                 // Si está en un dispositivo móvil, intenta abrir la aplicación MetaMask
                 window.location.href = 'metamask://';
             } else {
-                alert('Please install MetaMask');
+                alert('Por favor, instala MetaMask');
             }
         });
 
@@ -122,12 +123,12 @@
                         method: 'eth_sendTransaction',
                         params: [transactionParameters],
                     });
-                    console.log('Transaction sent with hash:', txHash);
+                    console.log('Transacción enviada con hash:', txHash);
                 } catch (error) {
-                    console.error('Transaction failed', error);
+                    console.error('Error en la transacción', error);
                 }
             } else {
-                alert('Please connect MetaMask, enter QR value, and amount.');
+                alert('Por favor, conecta MetaMask, introduce el valor del QR y la cantidad.');
             }
         });
 
