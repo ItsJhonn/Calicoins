@@ -61,7 +61,7 @@
         <h1>Sepolia QR Transfer</h1>
         <button id="connectButton">Conectar MetaMask</button>
         <div id="accountInfo"></div>
-        <input type="text" id="qrValue" placeholder="Dirección de destino" />
+        <input type="text" id="qrValue" placeholder="Dirección de destino o escanea un QR" />
         <input type="text" id="amount" placeholder="Cantidad en Sepolia" />
         <button id="sendButton">Enviar Sepolia</button>
         <div id="qr-code"></div>
@@ -88,26 +88,32 @@
         let userAccount;
         let codeReader = new ZXing.BrowserQRCodeReader();
 
+        // Conectar MetaMask y detectar la red
         connectButton.addEventListener('click', async () => {
             if (window.ethereum) {
                 web3 = new Web3(window.ethereum);
                 try {
-                    // Asegura que MetaMask esté en la red Sepolia
-                    await switchToSepoliaNetwork();
-
+                    const networkId = await web3.eth.net.getId();
+                    if (networkId !== 11155111) { // ID de la red Sepolia
+                        await switchToSepoliaNetwork();
+                    }
                     const accounts = await web3.eth.requestAccounts();
                     userAccount = accounts[0];
                     accountInfo.textContent = `Conectado como: ${userAccount}`;
                     qrValueInput.value = userAccount;
-                    generateQRCode();
+                    generateQRCode(userAccount);
                 } catch (error) {
                     console.error("Acceso a la cuenta denegado por el usuario o error al cambiar de red");
                 }
+            } else if (isMobile()) {
+                // Intentar abrir MetaMask en móvil
+                window.location.href = 'metamask://';
             } else {
                 alert('Por favor, instala MetaMask');
             }
         });
 
+        // Enviar Sepolia
         sendButton.addEventListener('click', async () => {
             const qrValue = qrValueInput.value;
             const amount = amountInput.value;
@@ -127,18 +133,19 @@
                     console.error('Error en la transacción', error);
                 }
             } else {
-                alert('Por favor, conecta MetaMask, introduce el valor del QR y la cantidad.');
+                alert('Por favor, conecta MetaMask, introduce la dirección y la cantidad.');
             }
         });
 
-        function generateQRCode() {
-            const qrValue = qrValueInput.value;
+        // Generar QR Code
+        function generateQRCode(account) {
             qrCodeDiv.innerHTML = '';
             $('#qr-code').qrcode({
-                text: `https://example.com/qr?value=${qrValue}`
+                text: account
             });
         }
 
+        // Iniciar escaneo de QR
         startScanButton.addEventListener('click', () => {
             codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
                 if (result) {
@@ -152,6 +159,7 @@
             });
         });
 
+        // Cambiar a la red Sepolia
         async function switchToSepoliaNetwork() {
             const sepoliaChainId = '0xaa36a7';
             try {
@@ -160,7 +168,6 @@
                     params: [{ chainId: sepoliaChainId }],
                 });
             } catch (switchError) {
-                // Este error puede ocurrir si la red no está configurada en MetaMask
                 if (switchError.code === 4902) {
                     try {
                         await window.ethereum.request({
@@ -186,6 +193,10 @@
                     console.error('Error al cambiar de red', switchError);
                 }
             }
+        }
+
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
     </script>
 </body>
