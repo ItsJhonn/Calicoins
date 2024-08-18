@@ -6,42 +6,35 @@
     <title>Sepolia QR Transfer</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #e9ecef;
-            color: #343a40;
+            background-color: #f8f9fa;
         }
         .container {
             text-align: center;
             background: #ffffff;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
         }
         h1 {
-            font-size: 24px;
+            color: #333;
             margin-bottom: 20px;
-            color: #007bff;
         }
         input {
             margin: 10px 0;
             padding: 12px;
-            width: calc(100% - 24px);
+            width: 100%;
+            max-width: 400px;
             border: 1px solid #ced4da;
             border-radius: 6px;
             font-size: 16px;
-            color: #495057;
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            border-color: #007bff;
-            outline: none;
         }
         button {
             padding: 12px 24px;
@@ -49,11 +42,10 @@
             border: none;
             border-radius: 6px;
             background-color: #007bff;
-            color: #fff;
+            color: #ffffff;
             cursor: pointer;
             margin: 10px 0;
-            width: calc(100% - 24px);
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
         button:hover {
             background-color: #0056b3;
@@ -68,9 +60,9 @@
         }
         video {
             width: 100%;
-            max-width: 300px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
         }
         .scan-bar {
             position: absolute;
@@ -78,7 +70,7 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: rgba(0, 123, 255, 0.75);
+            background: rgba(255, 0, 0, 0.75);
             animation: scan 2s infinite;
         }
         @keyframes scan {
@@ -87,14 +79,6 @@
         }
         #verifyTransactionButton {
             display: none;
-        }
-        @media (max-width: 400px) {
-            .container {
-                padding: 20px;
-            }
-            input, button {
-                width: calc(100% - 20px);
-            }
         }
     </style>
 </head>
@@ -211,47 +195,37 @@
         }
 
         // Iniciar escaneo de QR
-        startScanButton.addEventListener('click', async () => {
+        startScanButton.addEventListener('click', () => {
             qrReader.style.display = 'block'; // Mostrar el lector de QR
-            try {
-                const videoConstraints = {
-                    facingMode: { exact: 'environment' } // Prioridad a la cámara trasera
-                };
+            codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
+                if (result) {
+                    qrValueInput.value = result.text;
+                    alert('Escaneo exitoso: ' + result.text);
+                    codeReader.reset();
+                    qrReader.style.display = 'none'; // Ocultar el lector de QR después del escaneo exitoso
 
-                const stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
-                video.srcObject = stream;
-                video.play();
-
-                codeReader.decodeFromVideoElement(video, (result, error) => {
-                    if (result) {
-                        qrValueInput.value = result.text;
-                        alert('Escaneo exitoso: ' + result.text);
-                        codeReader.reset();
-                        qrReader.style.display = 'none'; // Ocultar el lector de QR después del escaneo exitoso
-
-                        // Conectar automáticamente la wallet si se escanea una dirección válida
-                        if (window.ethereum) {
-                            web3 = new Web3(window.ethereum);
-                            web3.eth.getAccounts().then(accounts => {
-                                userAccount = accounts[0];
-                                if (result.text === userAccount) {
-                                    accountInfo.textContent = `Conectado como: ${userAccount}`;
-                                } else {
-                                    alert('La cuenta escaneada no coincide con la cuenta conectada.');
-                                }
-                            });
-                        } else {
-                            alert('Por favor, instala MetaMask');
-                        }
+                    // Conectar automáticamente la wallet si se escanea una dirección válida
+                    if (window.ethereum) {
+                        web3 = new Web3(window.ethereum);
+                        web3.eth.getAccounts().then(accounts => {
+                            userAccount = accounts[0];
+                            if (result.text === userAccount) {
+                                accountInfo.textContent = `Conectado como: ${userAccount}`;
+                            } else {
+                                alert('La cuenta escaneada no coincide con la cuenta conectada.');
+                            }
+                        });
+                    } else {
+                        alert('Por favor, instala MetaMask');
                     }
-                    if (error && !(error instanceof ZXing.NotFoundException)) {
-                        console.error(error);
-                    }
-                });
-            } catch (error) {
-                console.error('Error al acceder a la cámara', error);
-                alert('No se pudo acceder a la cámara. Verifique los permisos.');
-            }
+                }
+                if (error && !(error instanceof ZXing.NotFoundException)) {
+                    console.error(error);
+                }
+            }, {
+                delayBetweenScanAttempts: 0,  // Sin retraso entre intentos de escaneo
+                maxScansPerSecond: 30,        // Mayor número máximo de escaneos por segundo
+            });
         });
 
         // Cambiar a la red Sepolia
