@@ -54,6 +54,9 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        #verifyTransactionButton {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -61,6 +64,7 @@
         <h1>Sepolia QR Transfer</h1>
         <button id="openMetaMaskButton">Abrir en MetaMask</button>
         <button id="connectButton">Conectar MetaMask</button>
+        <button id="verifyTransactionButton">Verificar Transacción</button>
         <div id="accountInfo"></div>
         <input type="text" id="qrValue" placeholder="Dirección de destino o escanea un QR" />
         <input type="text" id="amount" placeholder="Cantidad en Sepolia" />
@@ -79,6 +83,7 @@
     <script>
         const openMetaMaskButton = document.getElementById('openMetaMaskButton');
         const connectButton = document.getElementById('connectButton');
+        const verifyTransactionButton = document.getElementById('verifyTransactionButton');
         const sendButton = document.getElementById('sendButton');
         const qrValueInput = document.getElementById('qrValue');
         const amountInput = document.getElementById('amount');
@@ -113,11 +118,22 @@
                     accountInfo.textContent = `Conectado como: ${userAccount}`;
                     qrValueInput.value = userAccount;
                     generateQRCode(userAccount);
+                    verifyTransactionButton.style.display = 'block';
                 } catch (error) {
                     console.error("Acceso a la cuenta denegado por el usuario o error al cambiar de red");
                 }
             } else {
                 alert('Por favor, instala MetaMask');
+            }
+        });
+
+        // Botón para verificar la transacción en Etherscan
+        verifyTransactionButton.addEventListener('click', () => {
+            if (userAccount) {
+                const etherscanUrl = `https://sepolia.etherscan.io/address/${userAccount}`;
+                window.open(etherscanUrl, '_blank');
+            } else {
+                alert('Conecta MetaMask primero.');
             }
         });
 
