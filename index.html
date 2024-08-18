@@ -61,9 +61,12 @@
         <h1>Sepolia QR Transfer</h1>
         <button id="connectButton">Conectar MetaMask</button>
         <div id="accountInfo"></div>
+        <input type="text" id="qrValue" placeholder="Dirección de destino o escanea un QR" />
+        <input type="text" id="amount" placeholder="Cantidad en Sepolia" />
+        <button id="sendButton">Enviar Sepolia</button>
         <div id="qr-code"></div>
         <div id="qrReader">
-            <button id="startScan">Start QR Scan</button>
+            <button id="startScan">Iniciar escaneo de QR</button>
             <video id="video"></video>
         </div>
     </div>
@@ -74,6 +77,9 @@
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script>
         const connectButton = document.getElementById('connectButton');
+        const sendButton = document.getElementById('sendButton');
+        const qrValueInput = document.getElementById('qrValue');
+        const amountInput = document.getElementById('amount');
         const accountInfo = document.getElementById('accountInfo');
         const qrCodeDiv = document.getElementById('qr-code');
         const startScanButton = document.getElementById('startScan');
@@ -82,6 +88,7 @@
         let userAccount;
         let codeReader = new ZXing.BrowserQRCodeReader();
 
+        // Conectar MetaMask
         connectButton.addEventListener('click', async () => {
             if (window.ethereum) {
                 web3 = new Web3(window.ethereum);
@@ -90,6 +97,7 @@
                     const accounts = await web3.eth.requestAccounts();
                     userAccount = accounts[0];
                     accountInfo.textContent = `Conectado como: ${userAccount}`;
+                    qrValueInput.value = userAccount;
                     generateQRCode(userAccount);
                 } catch (error) {
                     console.error("Acceso a la cuenta denegado por el usuario o error al cambiar de red");
@@ -101,6 +109,31 @@
             }
         });
 
+        // Enviar Sepolia
+        sendButton.addEventListener('click', async () => {
+            const qrValue = qrValueInput.value;
+            const amount = amountInput.value;
+            if (userAccount && qrValue && amount) {
+                try {
+                    const transactionParameters = {
+                        to: qrValue,
+                        from: userAccount,
+                        value: web3.utils.toHex(web3.utils.toWei(amount, 'ether')),
+                    };
+                    const txHash = await window.ethereum.request({
+                        method: 'eth_sendTransaction',
+                        params: [transactionParameters],
+                    });
+                    console.log('Transacción enviada con hash:', txHash);
+                } catch (error) {
+                    console.error('Error en la transacción', error);
+                }
+            } else {
+                alert('Por favor, conecta MetaMask, introduce la dirección y la cantidad.');
+            }
+        });
+
+        // Generar QR Code
         function generateQRCode(account) {
             qrCodeDiv.innerHTML = '';
             $('#qr-code').qrcode({
@@ -108,18 +141,21 @@
             });
         }
 
+        // Iniciar escaneo de QR
         startScanButton.addEventListener('click', () => {
             codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
                 if (result) {
+                    qrValueInput.value = result.text;
                     alert('Escaneo exitoso: ' + result.text);
                     codeReader.reset();
                 }
-                if (error) {
+                if (error && !(error instanceof ZXing.NotFoundException)) {
                     console.error(error);
                 }
             });
         });
 
+        // Cambiar a la red Sepolia
         async function switchToSepoliaNetwork() {
             const sepoliaChainId = '0xaa36a7';
             try {
