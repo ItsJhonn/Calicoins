@@ -48,8 +48,7 @@
         #qrReader {
             margin-top: 20px;
             position: relative;
-            display: inline-block;
-            visibility: hidden; /* Escondemos el contenedor de video inicialmente */
+            display: none; /* Ocultar inicialmente */
         }
         video {
             width: 100%;
@@ -189,13 +188,13 @@
 
         // Iniciar escaneo de QR
         startScanButton.addEventListener('click', () => {
-            qrReader.style.visibility = 'visible'; // Mostrar el lector de QR cuando se inicia el escaneo
+            qrReader.style.display = 'block'; // Mostrar el lector de QR
             codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
                 if (result) {
                     qrValueInput.value = result.text;
                     alert('Escaneo exitoso: ' + result.text);
                     codeReader.reset();
-                    qrReader.style.visibility = 'hidden'; // Ocultar el lector de QR después del escaneo exitoso
+                    qrReader.style.display = 'none'; // Ocultar el lector de QR después del escaneo exitoso
 
                     // Conectar automáticamente la wallet si se escanea una dirección válida
                     if (window.ethereum) {
@@ -216,8 +215,8 @@
                     console.error(error);
                 }
             }, {
-                delayBetweenScanAttempts: 50,  // Reducción del tiempo entre intentos de escaneo
-                maxScansPerSecond: 15,         // Incremento del número máximo de escaneos por segundo
+                delayBetweenScanAttempts: 0,  // Sin retraso entre intentos de escaneo
+                maxScansPerSecond: 30,        // Mayor número máximo de escaneos por segundo
             });
         });
 
