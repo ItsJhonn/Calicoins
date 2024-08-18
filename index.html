@@ -48,7 +48,7 @@
         #qrReader {
             margin-top: 20px;
             position: relative;
-            display: none; /* Ocultar inicialmente */
+            display: none;
         }
         video {
             width: 100%;
@@ -189,35 +189,39 @@
         // Iniciar escaneo de QR
         startScanButton.addEventListener('click', () => {
             qrReader.style.display = 'block'; // Mostrar el lector de QR
-            codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
-                if (result) {
-                    qrValueInput.value = result.text;
-                    alert('Escaneo exitoso: ' + result.text);
-                    codeReader.reset();
-                    qrReader.style.display = 'none'; // Ocultar el lector de QR después del escaneo exitoso
+            codeReader.decodeFromVideoDevice(
+                { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }, // Prioridad a la cámara trasera y ajuste de resolución
+                'video',
+                (result, error) => {
+                    if (result) {
+                        qrValueInput.value = result.text;
+                        alert('Escaneo exitoso: ' + result.text);
+                        codeReader.reset();
+                        qrReader.style.display = 'none'; // Ocultar el lector de QR después del escaneo exitoso
 
-                    // Conectar automáticamente la wallet si se escanea una dirección válida
-                    if (window.ethereum) {
-                        web3 = new Web3(window.ethereum);
-                        web3.eth.getAccounts().then(accounts => {
-                            userAccount = accounts[0];
-                            if (result.text === userAccount) {
-                                accountInfo.textContent = `Conectado como: ${userAccount}`;
-                            } else {
-                                alert('La cuenta escaneada no coincide con la cuenta conectada.');
-                            }
-                        });
-                    } else {
-                        alert('Por favor, instala MetaMask');
+                        // Conectar automáticamente la wallet si se escanea una dirección válida
+                        if (window.ethereum) {
+                            web3 = new Web3(window.ethereum);
+                            web3.eth.getAccounts().then(accounts => {
+                                userAccount = accounts[0];
+                                if (result.text === userAccount) {
+                                    accountInfo.textContent = `Conectado como: ${userAccount}`;
+                                } else {
+                                    alert('La cuenta escaneada no coincide con la cuenta conectada.');
+                                }
+                            });
+                        } else {
+                            alert('Por favor, instala MetaMask');
+                        }
                     }
+                    if (error && !(error instanceof ZXing.NotFoundException)) {
+                        console.error(error);
+                    }
+                }, {
+                    delayBetweenScanAttempts: 0,  // Sin retraso entre intentos de escaneo
+                    maxScansPerSecond: 60,        // Aumenta el número máximo de escaneos por segundo
                 }
-                if (error && !(error instanceof ZXing.NotFoundException)) {
-                    console.error(error);
-                }
-            }, {
-                delayBetweenScanAttempts: 0,  // Sin retraso entre intentos de escaneo
-                maxScansPerSecond: 30,        // Mayor número máximo de escaneos por segundo
-            });
+            );
         });
 
         // Cambiar a la red Sepolia
