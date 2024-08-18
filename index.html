@@ -6,38 +6,54 @@
     <title>Sepolia QR Transfer</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: #e9ecef;
+            color: #343a40;
         }
         .container {
             text-align: center;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #007bff;
         }
         input {
-            margin: 10px;
-            padding: 10px;
-            width: 80%;
-            max-width: 300px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            margin: 10px 0;
+            padding: 12px;
+            width: calc(100% - 24px);
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 16px;
+            color: #495057;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #007bff;
+            outline: none;
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 16px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             background-color: #007bff;
             color: #fff;
             cursor: pointer;
-            margin: 10px;
+            margin: 10px 0;
+            width: calc(100% - 24px);
+            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #0056b3;
@@ -53,8 +69,8 @@
         video {
             width: 100%;
             max-width: 300px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .scan-bar {
             position: absolute;
@@ -62,7 +78,7 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: rgba(255, 0, 0, 0.75);
+            background: rgba(0, 123, 255, 0.75);
             animation: scan 2s infinite;
         }
         @keyframes scan {
@@ -71,6 +87,14 @@
         }
         #verifyTransactionButton {
             display: none;
+        }
+        @media (max-width: 400px) {
+            .container {
+                padding: 20px;
+            }
+            input, button {
+                width: calc(100% - 20px);
+            }
         }
     </style>
 </head>
@@ -224,9 +248,9 @@
                         console.error(error);
                     }
                 });
-            } catch (err) {
-                console.error('Error al acceder a la cámara', err);
-                alert('No se pudo acceder a la cámara.');
+            } catch (error) {
+                console.error('Error al acceder a la cámara', error);
+                alert('No se pudo acceder a la cámara. Verifique los permisos.');
             }
         });
 
