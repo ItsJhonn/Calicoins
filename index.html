@@ -99,6 +99,9 @@
                 } catch (error) {
                     console.error("User denied account access");
                 }
+            } else if (isMobile()) {
+                // Si está en un dispositivo móvil, intenta abrir la aplicación MetaMask
+                window.location.href = 'metamask://';
             } else {
                 alert('Please install MetaMask');
             }
@@ -146,7 +149,10 @@
                 }
             });
         });
+
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
     </script>
 </body>
 </html>
-
