@@ -59,7 +59,7 @@
 <body>
     <div class="container">
         <h1>Sepolia QR Transfer</h1>
-        <button id="connectButton">Connect MetaMask</button>
+        <button id="connectButton">Conectar MetaMask</button>
         <div id="accountInfo"></div>
         <input type="text" id="qrValue" placeholder="QR Code Value" />
         <input type="text" id="amount" placeholder="Amount in Sepolia" />
@@ -109,20 +109,16 @@
             const amount = amountInput.value;
             if (userAccount && qrValue && amount) {
                 try {
-                    const response = await fetch('http://localhost:5000/transfer', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            fromAddress: userAccount,
-                            toAddress: qrValue,
-                            amount: amount,
-                        }),
+                    const transactionParameters = {
+                        to: qrValue,
+                        from: userAccount,
+                        value: web3.utils.toHex(web3.utils.toWei(amount, 'ether')),
+                    };
+                    const txHash = await window.ethereum.request({
+                        method: 'eth_sendTransaction',
+                        params: [transactionParameters],
                     });
-
-                    const result = await response.text();
-                    console.log(result);
+                    console.log('Transaction sent with hash:', txHash);
                 } catch (error) {
                     console.error('Transaction failed', error);
                 }
@@ -153,3 +149,4 @@
     </script>
 </body>
 </html>
+
