@@ -187,12 +187,18 @@
         }
 
         // Iniciar escaneo de QR
-        startScanButton.addEventListener('click', () => {
+        startScanButton.addEventListener('click', async () => {
             qrReader.style.display = 'block'; // Mostrar el lector de QR
-            codeReader.decodeFromVideoDevice(
-                { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }, // Prioridad a la cámara trasera y ajuste de resolución
-                'video',
-                (result, error) => {
+            try {
+                const videoConstraints = {
+                    facingMode: { exact: 'environment' } // Prioridad a la cámara trasera
+                };
+
+                const stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraints });
+                video.srcObject = stream;
+                video.play();
+
+                codeReader.decodeFromVideoElement(video, (result, error) => {
                     if (result) {
                         qrValueInput.value = result.text;
                         alert('Escaneo exitoso: ' + result.text);
@@ -217,11 +223,11 @@
                     if (error && !(error instanceof ZXing.NotFoundException)) {
                         console.error(error);
                     }
-                }, {
-                    delayBetweenScanAttempts: 0,  // Sin retraso entre intentos de escaneo
-                    maxScansPerSecond: 60,        // Aumenta el número máximo de escaneos por segundo
-                }
-            );
+                });
+            } catch (err) {
+                console.error('Error al acceder a la cámara', err);
+                alert('No se pudo acceder a la cámara.');
+            }
         });
 
         // Cambiar a la red Sepolia
