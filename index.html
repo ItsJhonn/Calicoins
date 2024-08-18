@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepolia QR Transfer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            margin: 10px;
+            padding: 10px;
+            width: 80%;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #qr-code {
+            margin-top: 20px;
+        }
+        #qrReader {
+            margin-top: 20px;
+        }
+        video {
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sepolia QR Transfer</h1>
+        <button id="connectButton">Connect MetaMask</button>
+        <div id="accountInfo"></div>
+        <input type="text" id="qrValue" placeholder="QR Code Value" />
+        <input type="text" id="amount" placeholder="Amount in Sepolia" />
+        <button id="sendButton">Send Sepolia</button>
+        <div id="qr-code"></div>
+        <div id="qrReader">
+            <button id="startScan">Start QR Scan</button>
+            <video id="video"></video>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <script>
+        const connectButton = document.getElementById('connectButton');
+        const sendButton = document.getElementById('sendButton');
+        const qrValueInput = document.getElementById('qrValue');
+        const amountInput = document.getElementById('amount');
+        const accountInfo = document.getElementById('accountInfo');
+        const qrCodeDiv = document.getElementById('qr-code');
+        const startScanButton = document.getElementById('startScan');
+        const video = document.getElementById('video');
+        let web3;
+        let userAccount;
+        let codeReader = new ZXing.BrowserQRCodeReader();
+
+        connectButton.addEventListener('click', async () => {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    const accounts = await web3.eth.requestAccounts();
+                    userAccount = accounts[0];
+                    accountInfo.textContent = `Connected as: ${userAccount}`;
+                    generateQRCode();
+                } catch (error) {
+                    console.error("User denied account access");
+                }
+            } else {
+                alert('Please install MetaMask');
+            }
+        });
+
+        sendButton.addEventListener('click', async () => {
+            const qrValue = qrValueInput.value;
+            const amount = amountInput.value;
+            if (userAccount && qrValue && amount) {
+                try {
+                    const response = await fetch('http://localhost:5000/transfer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            fromAddress: userAccount,
+                            toAddress: qrValue,
+                            amount: amount,
+                        }),
+                    });
+
+                    const result = await response.text();
+                    console.log(result);
+                } catch (error) {
+                    console.error('Transaction failed', error);
+                }
+            } else {
+                alert('Please connect MetaMask, enter QR value, and amount.');
+            }
+        });
+
+        function generateQRCode() {
+            const qrValue = qrValueInput.value;
+            qrCodeDiv.innerHTML = '';
+            $('#qr-code').qrcode({
+                text: `https://example.com/qr?value=${qrValue}`
+            });
+        }
+
+        startScanButton.addEventListener('click', () => {
+            codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
+                if (result) {
+                    qrValueInput.value = result.text;
+                    codeReader.reset();
+                }
+                if (error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
