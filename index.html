@@ -59,6 +59,7 @@
 <body>
     <div class="container">
         <h1>Sepolia QR Transfer</h1>
+        <button id="openMetaMaskButton">Abrir en MetaMask</button>
         <button id="connectButton">Conectar MetaMask</button>
         <div id="accountInfo"></div>
         <input type="text" id="qrValue" placeholder="Dirección de destino o escanea un QR" />
@@ -76,6 +77,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script>
+        const openMetaMaskButton = document.getElementById('openMetaMaskButton');
         const connectButton = document.getElementById('connectButton');
         const sendButton = document.getElementById('sendButton');
         const qrValueInput = document.getElementById('qrValue');
@@ -88,32 +90,22 @@
         let userAccount;
         let codeReader = new ZXing.BrowserQRCodeReader();
 
-        connectButton.addEventListener('click', async () => {
+        // Botón para abrir MetaMask en móviles
+        openMetaMaskButton.addEventListener('click', () => {
             if (isMobile()) {
-                if (!localStorage.getItem('metamaskRedirected')) {
-                    // Redirigir a la app de MetaMask en móviles
-                    const metamaskAppLink = 'https://metamask.app.link/dapp/calicoins.netlify.app/';
-                    localStorage.setItem('metamaskRedirected', 'true');
-                    window.location.href = metamaskAppLink;
-                } else {
-                    // El usuario ya ha sido redirigido, intentar conectar la wallet
-                    web3 = new Web3(window.ethereum);
-                    try {
-                        const accounts = await web3.eth.requestAccounts();
-                        userAccount = accounts[0];
-                        accountInfo.textContent = `Conectado como: ${userAccount}`;
-                        qrValueInput.value = userAccount;
-                        generateQRCode(userAccount);
-                    } catch (error) {
-                        console.error("Acceso a la cuenta denegado por el usuario");
-                    }
-                }
-            } else if (window.ethereum) {
-                // En navegadores de escritorio
+                window.location.href = 'https://metamask.app.link/dapp/calicoins.netlify.app/';
+            } else {
+                alert('Este botón es solo para dispositivos móviles.');
+            }
+        });
+
+        // Botón para conectar la wallet de MetaMask
+        connectButton.addEventListener('click', async () => {
+            if (window.ethereum) {
                 web3 = new Web3(window.ethereum);
                 try {
                     const networkId = await web3.eth.net.getId();
-                    if (networkId !== 11155111) {
+                    if (networkId !== 11155111) { // ID de la red Sepolia
                         await switchToSepoliaNetwork();
                     }
                     const accounts = await web3.eth.requestAccounts();
@@ -129,6 +121,7 @@
             }
         });
 
+        // Enviar Sepolia
         sendButton.addEventListener('click', async () => {
             const qrValue = qrValueInput.value;
             const amount = amountInput.value;
@@ -152,6 +145,7 @@
             }
         });
 
+        // Generar QR Code
         function generateQRCode(account) {
             qrCodeDiv.innerHTML = '';
             $('#qr-code').qrcode({
@@ -159,6 +153,7 @@
             });
         }
 
+        // Iniciar escaneo de QR
         startScanButton.addEventListener('click', () => {
             codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
                 if (result) {
@@ -172,6 +167,7 @@
             });
         });
 
+        // Cambiar a la red Sepolia
         async function switchToSepoliaNetwork() {
             const sepoliaChainId = '0xaa36a7';
             try {
