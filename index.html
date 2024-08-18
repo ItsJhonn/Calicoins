@@ -106,7 +106,8 @@
                     console.error("Acceso a la cuenta denegado por el usuario o error al cambiar de red");
                 }
             } else if (isMobile()) {
-                window.location.href = 'metamask://';
+                // Redirigir a la versión web de MetaMask en lugar de abrir la aplicación móvil
+                window.location.href = 'https://metamask.app.link/dapp/YOUR_DAPP_URL';
             } else {
                 alert('Por favor, instala MetaMask');
             }
