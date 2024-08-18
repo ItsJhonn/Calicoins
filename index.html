@@ -90,9 +90,24 @@
 
         connectButton.addEventListener('click', async () => {
             if (isMobile()) {
-                // Redirigir a la app de MetaMask en móviles
-                const metamaskAppLink = 'https://metamask.app.link/dapp/calicoins.netlify.app/';
-                window.location.href = metamaskAppLink;
+                if (!localStorage.getItem('metamaskRedirected')) {
+                    // Redirigir a la app de MetaMask en móviles
+                    const metamaskAppLink = 'https://metamask.app.link/dapp/calicoins.netlify.app/';
+                    localStorage.setItem('metamaskRedirected', 'true');
+                    window.location.href = metamaskAppLink;
+                } else {
+                    // El usuario ya ha sido redirigido, intentar conectar la wallet
+                    web3 = new Web3(window.ethereum);
+                    try {
+                        const accounts = await web3.eth.requestAccounts();
+                        userAccount = accounts[0];
+                        accountInfo.textContent = `Conectado como: ${userAccount}`;
+                        qrValueInput.value = userAccount;
+                        generateQRCode(userAccount);
+                    } catch (error) {
+                        console.error("Acceso a la cuenta denegado por el usuario");
+                    }
+                }
             } else if (window.ethereum) {
                 // En navegadores de escritorio
                 web3 = new Web3(window.ethereum);
