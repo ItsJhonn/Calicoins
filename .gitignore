@@ -9,8 +9,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Environment variables
-server/
-.env
+server/.env
 
 # Runtime data
 pids/
