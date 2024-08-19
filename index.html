@@ -7,12 +7,47 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #007bff;
+            color: #ffffff;
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        header h1 {
+            margin: 0;
+        }
+        nav {
+            background: #343a40;
+            padding: 10px 0;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        nav ul li a:hover {
+            text-decoration: underline;
         }
         .container {
             text-align: center;
@@ -20,10 +55,10 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 500px;
+            margin: 20px;
+            flex: 1;
         }
-        h1 {
+        h2 {
             color: #333;
             margin-bottom: 20px;
         }
@@ -80,11 +115,49 @@
         #verifyTransactionButton {
             display: none;
         }
+        footer {
+            background: #343a40;
+            color: #ffffff;
+            padding: 10px 0;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        footer a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            nav ul {
+                flex-direction: column;
+            }
+            nav ul li {
+                margin: 10px 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>CaliCoins QR Transfer</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#home">Inicio</a></li>
+            <li><a href="#explorer">Explorador</a></li>
+            <li><a href="#about">Acerca de</a></li>
+        </ul>
+    </nav>
+    <div class="container">
         <button id="openMetaMaskButton">Abrir en MetaMask</button>
         <button id="connectButton">Conectar MetaMask</button>
         <button id="verifyTransactionButton">Verificar Transacción</button>
@@ -99,6 +172,13 @@
         </div>
         <button id="startScan">Iniciar escaneo de QR</button>
     </div>
+    <footer>
+        <p>
+            <a href="https://sepolia.etherscan.io/" target="_blank">Etherscan</a> |
+            <a href="https://metamask.io/" target="_blank">MetaMask</a> |
+            <a href="https://calicoins.netlify.app/" target="_blank">CaliCoins</a>
+        </p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
