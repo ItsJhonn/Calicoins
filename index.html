@@ -58,14 +58,6 @@
             margin: 20px;
             flex: 1;
         }
-        .login-container {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-            max-width: 400px;
-        }
         h2 {
             color: #333;
             margin-bottom: 20px;
@@ -120,9 +112,6 @@
             0% { top: 0; }
             100% { top: calc(100% - 4px); }
         }
-        #verifyTransactionButton {
-            display: none;
-        }
         footer {
             background: #343a40;
             color: #ffffff;
@@ -141,7 +130,7 @@
             text-decoration: underline;
         }
         @media (max-width: 600px) {
-            .container, .login-container {
+            .container {
                 margin: 10px;
                 padding: 20px;
             }
@@ -165,13 +154,6 @@
             <li><a href="#about">Acerca de</a></li>
         </ul>
     </nav>
-    <div class="login-container">
-        <h2>Iniciar Sesión</h2>
-        <input type="text" id="username" placeholder="Nombre de usuario" />
-        <input type="password" id="password" placeholder="Contraseña" />
-        <button id="loginButton">Iniciar Sesión</button>
-        <div id="loginMessage"></div>
-    </div>
     <div class="container">
         <button id="openMetaMaskButton">Abrir en MetaMask</button>
         <button id="connectButton">Conectar MetaMask</button>
@@ -200,13 +182,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script>
-        const users = [
-            { username: 'user1', password: 'password123' },
-            { username: 'user2', password: 'password456' }
-        ];
-
-        const loginButton = document.getElementById('loginButton');
-        const loginMessage = document.getElementById('loginMessage');
         const openMetaMaskButton = document.getElementById('openMetaMaskButton');
         const connectButton = document.getElementById('connectButton');
         const verifyTransactionButton = document.getElementById('verifyTransactionButton');
@@ -221,24 +196,6 @@
         let web3;
         let userAccount;
         let codeReader = new ZXing.BrowserQRCodeReader();
-
-        // Validar inicio de sesión
-        loginButton.addEventListener('click', () => {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const user = users.find(u => u.username === username && u.password === password);
-
-            if (user) {
-                loginMessage.textContent = 'Inicio de sesión exitoso';
-                loginMessage.style.color = 'green';
-                // Mostrar la página principal después del inicio de sesión
-                document.querySelector('.container').style.display = 'block';
-                document.querySelector('.login-container').style.display = 'none';
-            } else {
-                loginMessage.textContent = 'Nombre de usuario o contraseña incorrectos';
-                loginMessage.style.color = 'red';
-            }
-        });
 
         // Botón para abrir MetaMask en móviles
         openMetaMaskButton.addEventListener('click', () => {
