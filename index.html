@@ -4,144 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CaliCoins QR Transfer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        header {
-            background: #007bff;
-            color: #ffffff;
-            padding: 10px 0;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
-        header h1 {
-            margin: 0;
-        }
-        nav {
-            background: #343a40;
-            padding: 10px 0;
-        }
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-        nav ul li {
-            margin: 0 15px;
-        }
-        nav ul li a {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 18px;
-        }
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
-        .container {
-            text-align: center;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            flex: 1;
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        input {
-            margin: 10px 0;
-            padding: 12px;
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        button {
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 6px;
-            background-color: #007bff;
-            color: #ffffff;
-            cursor: pointer;
-            margin: 10px 0;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #qr-code {
-            margin-top: 20px;
-        }
-        #qrReader {
-            margin-top: 20px;
-            position: relative;
-            display: none;
-        }
-        video {
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-        }
-        .scan-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 0, 0, 0.75);
-            animation: scan 2s infinite;
-        }
-        @keyframes scan {
-            0% { top: 0; }
-            100% { top: calc(100% - 4px); }
-        }
-        footer {
-            background: #343a40;
-            color: #ffffff;
-            padding: 10px 0;
-            text-align: center;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-        footer a {
-            color: #ffffff;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 600px) {
-            .container {
-                margin: 10px;
-                padding: 20px;
-            }
-            nav ul {
-                flex-direction: column;
-            }
-            nav ul li {
-                margin: 10px 0;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <header>
@@ -169,185 +32,118 @@
         </div>
         <button id="startScan">Iniciar escaneo de QR</button>
     </div>
-    <footer>
-        <p>
-            <a href="https://sepolia.etherscan.io/" target="_blank">Etherscan</a> |
-            <a href="https://metamask.io/" target="_blank">MetaMask</a> |
-            <a href="https://calicoins.netlify.app/" target="_blank">CaliCoins</a>
-        </p>
-    </footer>
+    <!-- Footer adicional govco -->
+    <div class="govco-footer">
+      <div class="govco-data-front">
+        <div class="govco-footer-text">
+          <div class="row govco-nombre-entidad">
+            <div class="col-xs-12 col-lg-6">
+              <p class="govco-text-header-1">Nombre completo de la Sede electrónica</p>
+            </div>
+            <div class="col-xs-12 col-lg-5 govco-logo-div-a">
+              <span class="govco-logo-entidad"></span>
+            </div>
+          </div>
+
+          <div class="row col-xs-12 col-lg-7 govco-texto-sedes">
+            <p class="govco-text-header-2">Sede principal</p>
+            Dirección: xxxxxx xxx xxx <br class="govco-mostrar">
+            Departamento y municipio. <br>
+            Código Postal: xxxx <br>
+            Horario de atención: Lunes a viernes xx:xx a.m. - xx:xx p.m. <br>
+            Teléfono conmutador: +57(xx) xxx xx xx <br>
+            Línea gratuita: +57(xx) xxx xx xx <br>
+            Línea anticorrupción: +57(xx) xxx xx xx <br>
+            Correo institucional: <br class="govco-mostrar">
+            ministerio@ministerio.gov.co <br>
+            Correo de notificaciones judiciales: <br class="govco-mostrar">
+            judiciales@gov.co
+          </div>
+
+          <div class="row col-xs-12 col-lg-7 govco-network">
+            <div class="govco-iconContainer">
+              <span class="icon govco-twitter-square"></span>
+              <span class="govco-link-modal">@Entidad</span>
+            </div>
+            <div class="govco-iconContainer">
+              <span class="icon govco-instagram-square"></span>
+              <span class="govco-link-modal">@Entidad</span>
+            </div>
+            <div class="govco-iconContainer">
+              <span class="icon govco-facebook-square"></span>
+              <span class="govco-link-modal">@Entidad</span>
+            </div>
+          </div>
+
+          <div class="govco-listado-sedes">
+            <div class="row govco-sedes">
+              <div class="govco-sede-info col-xs-12 col-lg-6">
+                <p class="govco-text-header-2">Sede 1</p>
+                Dirección: xxxxxx xxx xxx Departamento y municipio. <br>
+                Horario de atención: Lunes a viernes xx:xx a.m. - xx:xx p.m.
+              </div>
+              <div class="govco-contacto-info col-xs-12 col-lg-6">
+                <p class="govco-text-header-3">Contacto</p>
+                Teléfono conmutador: +57(xx) xxx xx xx <br>
+                Correo institucional: ministerio@ministerio.gov.co
+              </div>
+            </div>
+
+            <div class="row govco-sedes">
+              <div class="govco-sede-info col-xs-12 col-lg-6">
+                <p class="govco-text-header-2">Sede 2</p>
+                Dirección: xxxxxx xxx xxx Departamento y municipio. <br>
+                Horario de atención: Lunes a viernes xx:xx a.m. - xx:xx p.m.
+              </div>
+              <div class="govco-contacto-info col-xs-12 col-lg-6">
+                <p class="govco-text-header-3">Contacto</p>
+                Teléfono conmutador: +57(xx) xxx xx xx <br>
+                Correo institucional: ministerio@ministerio.gov.co
+              </div>
+            </div>
+
+            <div class="row govco-sedes">
+              <div class="govco-sede-info col-xs-12 col-lg-6">
+                <p class="govco-text-header-2">Sede 3</p>
+                Dirección: xxxxxx xxx xxx Departamento y municipio. <br>
+                Horario de atención: Lunes a viernes xx:xx a.m. - xx:xx p.m.
+              </div>
+              <div class="govco-contacto-info col-xs-12 col-lg-6">
+                <p class="govco-text-header-3">Contacto</p>
+                Teléfono conmutador: +57(xx) xxx xx xx <br>
+                Correo institucional: ministerio@ministerio.gov.co
+              </div>
+            </div>
+          </div>
+
+          <div class="row govco-links-container">
+            <div class="govco-link-container mt-2">
+              <a class="govco-link-modal govco-link-modal-bold" href="#">Políticas</a>
+              <a class="govco-link-modal govco-link-modal-bold" href="#">Mapa del sitio</a>
+            </div>
+            <div class="govco-link-container mt-2">
+              <a class="govco-link-modal govco-link-modal-bold" href="#">Términos y condiciones</a> <br>
+            </div>
+            <div class="govco-link-container mt-2">
+              <a class="govco-link-modal govco-link-modal-bold" href="#">Accesibilidad</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="govco-footer-logo">
+        <div class="govco-logo-container">
+          <span class="govco-co"></span>
+          <span class="govco-separator"></span>
+          <span class="govco-logo"></span>
+        </div>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
     <script src="https://unpkg.com/@zxing/library@latest"></script>
-    <script>
-        const openMetaMaskButton = document.getElementById('openMetaMaskButton');
-        const connectButton = document.getElementById('connectButton');
-        const verifyTransactionButton = document.getElementById('verifyTransactionButton');
-        const sendButton = document.getElementById('sendButton');
-        const qrValueInput = document.getElementById('qrValue');
-        const amountInput = document.getElementById('amount');
-        const accountInfo = document.getElementById('accountInfo');
-        const qrCodeDiv = document.getElementById('qr-code');
-        const startScanButton = document.getElementById('startScan');
-        const qrReader = document.getElementById('qrReader');
-        const video = document.getElementById('video');
-        let web3;
-        let userAccount;
-        let codeReader = new ZXing.BrowserQRCodeReader();
-
-        // Botón para abrir MetaMask en móviles .
-        openMetaMaskButton.addEventListener('click', () => {
-            if (isMobile()) {
-                window.location.href = 'https://metamask.app.link/dapp/calicoins.netlify.app/';
-            } else {
-                alert('Este botón es solo para dispositivos móviles.');
-            }
-        });
-
-        // Botón para conectar la wallet de MetaMask
-        connectButton.addEventListener('click', async () => {
-            if (window.ethereum) {
-                web3 = new Web3(window.ethereum);
-                try {
-                    const networkId = await web3.eth.net.getId();
-                    if (networkId !== 11155111) { // ID de la red CaliCoins
-                        await switchToCaliCoinsNetwork();
-                    }
-                    const accounts = await web3.eth.requestAccounts();
-                    userAccount = accounts[0];
-                    accountInfo.textContent = `Conectado como: ${userAccount}`;
-                    qrValueInput.value = userAccount;
-                    generateQRCode(userAccount);
-                    verifyTransactionButton.style.display = 'block';
-                } catch (error) {
-                    console.error("Acceso a la cuenta denegado por el usuario o error al cambiar de red");
-                }
-            } else {
-                alert('Por favor, instala MetaMask');
-            }
-        });
-
-        // Botón para verificar la transacción en Etherscan
-        verifyTransactionButton.addEventListener('click', () => {
-            if (userAccount) {
-                const etherscanUrl = `https://sepolia.etherscan.io/address/${userAccount}`;
-                if (isMobile()) {
-                    window.location.href = etherscanUrl;
-                } else {
-                    window.open(etherscanUrl, '_blank');
-                }
-            } else {
-                alert('Conecta MetaMask primero.');
-            }
-        });
-
-        // Enviar CaliCoins
-        sendButton.addEventListener('click', async () => {
-            const qrValue = qrValueInput.value;
-            const amount = amountInput.value;
-            if (userAccount && qrValue && amount) {
-                try {
-                    const transactionParameters = {
-                        to: qrValue,
-                        from: userAccount,
-                        value: web3.utils.toHex(web3.utils.toWei(amount, 'ether')),
-                    };
-                    const txHash = await window.ethereum.request({
-                        method: 'eth_sendTransaction',
-                        params: [transactionParameters],
-                    });
-                    console.log('Transacción enviada con hash:', txHash);
-                } catch (error) {
-                    console.error('Error en la transacción', error);
-                }
-            } else {
-                alert('Por favor, conecta MetaMask, introduce la dirección y la cantidad.');
-            }
-        });
-
-        // Generar QR Code
-        function generateQRCode(account) {
-            qrCodeDiv.innerHTML = '';
-            $('#qr-code').qrcode({
-                text: account
-            });
-        }
-
-        // Iniciar escaneo de QR
-        startScanButton.addEventListener('click', () => {
-            qrReader.style.display = 'block'; // Mostrar el lector de QR
-            codeReader.decodeFromVideoDevice(null, 'video', (result, error) => {
-                if (result) {
-                    qrValueInput.value = result.text;
-                    alert('Escaneo exitoso: ' + result.text);
-                    codeReader.reset();
-                    qrReader.style.display = 'none'; // Ocultar el lector de QR después del escaneo exitoso
-
-                    // Conectar automáticamente la wallet si se escanea una dirección válida
-                    if (window.ethereum) {
-                        web3 = new Web3(window.ethereum);
-                        web3.eth.getAccounts().then(accounts => {
-                            userAccount = accounts[0];
-                            if (result.text === userAccount) {
-                                accountInfo.textContent = `Conectado como: ${userAccount}`;
-                            } else {
-                                alert('La cuenta escaneada no coincide con la cuenta conectada.');
-                            }
-                        });
-                    } else {
-                        alert('Por favor, instala MetaMask');
-                    }
-                }
-                if (error && !(error instanceof ZXing.NotFoundException)) {
-                    console.error(error);
-                }
-            }, {
-                delayBetweenScanAttempts: 0,  // Sin retraso entre intentos de escaneo
-                maxScansPerSecond: 30,        // Mayor número máximo de escaneos por segundo
-            });
-        });
-
-        // Cambiar a la red CaliCoins
-        async function switchToCaliCoinsNetwork() {
-            const calicoinsChainId = '0xaa36a7';
-            try {
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: calicoinsChainId }],
-                });
-            } catch (switchError) {
-                if (switchError.code === 4902) {
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [
-                                {
-                                    chainId: calicoinsChainId,
-                                    chainName: 'CaliCoins Test Network',
-                                    rpcUrls: ['https://calicoins.infura.io/v3/YOUR_INFURA_PROJECT_ID'],
-                                    nativeCurrency: {
-                                        name: 'CaliCoinsETH',
-                                        symbol: 'ETH',
-                                        decimals: 18,
-                                    },
-                                    blockExplorerUrls: ['https://calicoins.etherscan.io'],
-                                },
-                            ],
-                        });
-                    } catch (addError) {
-                        console.error('Error al añadir la red CaliCoins', addError);
-                    }
-                } else {
-                    console.error('Error al cambiar de red', switchError);
-                }
-            }
-        }
-
-        function isMobile() {
-            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        }
-    </script>
+    <script src="assets/js/script.js"></script>
 </body>
 </html>
