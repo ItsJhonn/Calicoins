@@ -163,4 +163,21 @@ async function switchToCaliCoinsNetwork() {
             }
         }
     }
-}
+}window.addEventListener("load", function() {
+    initHeader();
+  
+  });
+  
+  function initHeader() {
+    initTopBar();
+  }
+  
+  // Barra superior
+  function initTopBar() {
+    const translateElement = document.querySelector(".idioma-icon-barra-superior-govco");
+    translateElement.addEventListener("click", translate, false);
+  
+    function translate() {
+        // ... // Implementar traducción
+    }
+  }
